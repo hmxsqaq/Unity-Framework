@@ -13,19 +13,27 @@ namespace Framework.ObjectPool
         private GameObject _poolObject;
         private Dictionary<string, Pool> _poolDic = new Dictionary<string, Pool>();
 
-        // Add Object to ObjectPool
+        /// <summary>
+        /// Add Object to ObjectPool
+        /// </summary>
+        /// <param name="poolName"> PoolName </param>
+        /// <param name="gameObject"> Obj being pushed </param>
         public void Push(string poolName,GameObject gameObject)
         {
             if (_poolObject == null)
                 _poolObject = new GameObject("ObjectPool");
 
-            if (_poolDic.ContainsKey(poolName))
-                _poolDic[poolName].Push(gameObject);
-            else
+            if (!_poolDic.ContainsKey(poolName))
                 _poolDic.Add(poolName,new Pool(gameObject,_poolObject));
+            
+            _poolDic[poolName].Push(gameObject);
         }
 
-        // Get Object from Object or instantiate it
+        /// <summary>
+        /// Get Object from Pool or instantiate it
+        /// </summary>
+        /// <param name="poolName"> PoolName </param>
+        /// <returns> Obj being obtained or instantiated </returns>
         public GameObject Get(string poolName)
         {
             GameObject gameObject;
@@ -39,7 +47,9 @@ namespace Framework.ObjectPool
             return gameObject;
         }
 
-        // Clear the Dic and Obj
+        /// <summary>
+        /// Clear the Dic and ParentObj
+        /// </summary>
         public void Clear()
         {
             _poolDic.Clear();
@@ -55,16 +65,23 @@ namespace Framework.ObjectPool
     {
         public GameObject ParentObject;
         public List<GameObject> ObjectList;
-
+        
+        /// <summary>
+        /// Init
+        /// </summary>
+        /// <param name="gameObject"> the first pushed Obj </param>
+        /// <param name="poolObject"> empty parent Obj to all pool </param>
         public Pool(GameObject gameObject,GameObject poolObject)
         {
-            // Init
             ParentObject = new GameObject(gameObject.name);
             ObjectList = new List<GameObject>();
             ParentObject.transform.parent = poolObject.transform;
-            Push(gameObject);
         }
 
+        /// <summary>
+        /// Disable the given Obj and Add it to List
+        /// </summary>
+        /// <param name="gameObject"> Obj </param>
         public void Push(GameObject gameObject)
         {
             // View
@@ -74,6 +91,10 @@ namespace Framework.ObjectPool
             ObjectList.Add(gameObject);
         }
 
+        /// <summary>
+        /// Enable the first Obj in List and Return it
+        /// </summary>
+        /// <returns> the first Obj in List </returns>
         public GameObject Get()
         {
             GameObject gameObject = ObjectList[0];
