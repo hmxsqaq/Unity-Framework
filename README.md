@@ -3,7 +3,7 @@ To record my unity framework learning process.
 
 - [x] Singleton
 - [x] ObjectPool
-- [ ] EventCenter
+- [x] EventCenter
 - [ ] MonoManager
 - [ ] ScenesManager
 - [ ] ResourcesManager
