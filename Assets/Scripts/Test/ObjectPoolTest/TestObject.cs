@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using UnityEngine;
-using Framework;
 using Framework.ObjectPool;
+using UnityEngine;
 
-namespace Test
+namespace Test.ObjectPoolTest
 {
 
     public class TestObject : MonoBehaviour

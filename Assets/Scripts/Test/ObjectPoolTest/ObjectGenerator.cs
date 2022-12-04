@@ -1,8 +1,7 @@
-﻿using System;
-using Framework.ObjectPool;
+﻿using Framework.ObjectPool;
 using UnityEngine;
 
-namespace Test
+namespace Test.ObjectPoolTest
 {
     public class ObjectGenerator : MonoBehaviour
     {
