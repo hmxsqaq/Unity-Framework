@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Framework.Singleton;
 using UnityEngine;
 
-namespace Framework.ObjectPool
+namespace Framework
 {
     /// <summary>
     /// 对象池(单例)

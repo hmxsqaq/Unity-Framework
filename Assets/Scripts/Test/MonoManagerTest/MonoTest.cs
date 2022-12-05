@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using Framework.MonoManager;
+using Framework;
 using UnityEngine;
 
 namespace Test.MonoManagerTest

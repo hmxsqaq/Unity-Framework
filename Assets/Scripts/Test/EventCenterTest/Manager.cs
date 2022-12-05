@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Framework.EventCenter;
+using Framework;
 
 namespace Test.EventCenterTest
 {
@@ -7,7 +7,7 @@ namespace Test.EventCenterTest
     {
         private void Start()
         {
-            Framework.EventCenter.EventCenter.Instance.AddEventListener<object>("1",Test2);
+            EventCenter.Instance.AddEventListener<object>("1",Test2);
         }
 
         private void Test2(object info)

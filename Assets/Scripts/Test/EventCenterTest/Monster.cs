@@ -1,4 +1,5 @@
 ﻿using System;
+using Framework;
 using UnityEngine;
 
 namespace Test.EventCenterTest
@@ -7,7 +8,7 @@ namespace Test.EventCenterTest
     {
         private void Start()
         {
-            Framework.EventCenter.EventCenter.Instance.Trigger<object>("1",this);
+            EventCenter.Instance.Trigger<object>("1",this);
         }
     }
 }

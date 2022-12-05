@@ -1,4 +1,4 @@
-namespace Framework.Singleton
+namespace Framework
 {
     public class Singleton<T> where T : Singleton<T>, new()
     {

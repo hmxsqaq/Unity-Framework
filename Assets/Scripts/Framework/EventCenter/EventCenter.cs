@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Framework.Singleton;
 using UnityEngine;
 
-namespace Framework.EventCenter
+namespace Framework
 {
     public interface IEventInfo{}
     
@@ -135,5 +134,12 @@ namespace Framework.EventCenter
         {
             _eventDic.Clear();
         }
+    }
+
+    public static class EventName
+    {
+        public const string SceneStart = "SceneStart";
+        public const string SceneLoading = "SceneLoading";
+        public const string SceneEnd = "SceneEnd";
     }
 }

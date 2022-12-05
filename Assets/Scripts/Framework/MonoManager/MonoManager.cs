@@ -1,7 +1,6 @@
 ﻿using System;
-using Framework.Singleton;
 
-namespace Framework.MonoManager
+namespace Framework
 {
     public class MonoManager : SingletonMono<MonoManager>
     {

@@ -1,4 +1,4 @@
-﻿using Framework.ObjectPool;
+﻿using Framework;
 using UnityEngine;
 
 namespace Test.ObjectPoolTest
