@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Framework
@@ -29,21 +30,43 @@ namespace Framework
         }
 
         /// <summary>
-        /// Get Object from Pool or instantiate it
+        /// Get Object from Pool or instantiate it(Sync)
         /// </summary>
         /// <param name="poolName"> PoolName </param>
         /// <returns> Obj being obtained or instantiated </returns>
-        public GameObject Get(string poolName)
+        public GameObject GetSync(string poolName)
         {
             GameObject gameObject;
             if (_poolDic.ContainsKey(poolName) && _poolDic[poolName].ObjectList.Count > 0)
                 gameObject = _poolDic[poolName].Get();
             else
             {
-                gameObject = Object.Instantiate(Resources.Load<GameObject>(poolName));
+                gameObject = ResourcesManager.Instance.LoadSync<GameObject>(poolName);
                 gameObject.name = poolName;
             }
             return gameObject;
+        }
+
+        /// <summary>
+        /// Get Object from Pool or instantiate it(Async)
+        /// </summary>
+        /// <param name="poolName"> PoolName </param>
+        /// <param name="callback"> CallbackFunction </param>
+        public void GetAsync(string poolName,Action<GameObject> callback)
+        {
+            if (_poolDic.ContainsKey(poolName) && _poolDic[poolName].ObjectList.Count > 0)
+            {
+                GameObject obj = _poolDic[poolName].Get();
+                callback?.Invoke(obj);
+            }
+            else
+            {
+                ResourcesManager.Instance.LoadAsync<GameObject>(poolName, (obj) =>
+                {
+                    obj.name = poolName;
+                    callback?.Invoke(obj);
+                });
+            }
         }
 
         /// <summary>
