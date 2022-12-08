@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using Framework;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Test.ScenesManagerTest
+namespace Framework
 {
     public class SceneFade : MonoBehaviour
     {

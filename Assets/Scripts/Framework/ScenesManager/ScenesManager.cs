@@ -5,6 +5,12 @@ using UnityEngine.SceneManagement;
 
 namespace Framework
 {
+    public enum SceneName
+    {
+        Main1,
+        Main2
+    }
+    
     public class ScenesManager : Singleton<ScenesManager>
     {
         /// <summary>
@@ -12,9 +18,9 @@ namespace Framework
         /// </summary>
         /// <param name="name"> SceneName </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void LoadSceneSync(string name, Action callback = null)
+        public void LoadSceneSync(SceneName name, Action callback = null)
         {
-            SceneManager.LoadScene(name);
+            SceneManager.LoadScene(name.ToString());
             callback?.Invoke();
         }
 
@@ -23,9 +29,9 @@ namespace Framework
         /// </summary>
         /// <param name="name"> SceneName </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void LoadSceneAsync(string name, Action callback = null)
+        public void LoadSceneAsync(SceneName name, Action callback = null)
         {
-            MonoManager.Instance.StartCoroutine(AsyncLoad(name));
+            MonoManager.Instance.StartCoroutine(AsyncLoad(name.ToString()));
             callback?.Invoke();
         }
 

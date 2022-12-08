@@ -19,7 +19,7 @@ To record my unity framework learning process.
   
   	public GameObject GetSync(string poolName,string path)
           
-  	public void GetAsync(string poolName,string path,Action<GameObject> callback = 		null)
+  	public void GetAsync(string poolName,string path,Action<GameObject> callback = null)
           
       public void Clear()
   }
@@ -65,11 +65,13 @@ To record my unity framework learning process.
 - [x] ScenesManager
 
   ```c#
+  public enum SceneName
+  
   public class ScenesManager : Singleton<ScenesManager>
   {
-      public void LoadSceneSync(string name, Action callback = null)
+      public void LoadSceneSync(SceneName name, Action callback = null)
       
-      public void LoadSceneAsync(string name, Action callback = null)
+      public void LoadSceneAsync(SceneName name, Action callback = null)
   }
   ```
 
@@ -137,4 +139,26 @@ To record my unity framework learning process.
 
   
 
-- [ ] UIManager
+- [x] UIManager
+
+```c#
+public enum UILayer
+    
+public enum PanelName
+    
+public class UGUIBase : MonoBehaviour
+{
+    protected T GetUIControl<T>(string objName) where T : UIBehaviour
+	public virtual void Show()
+    public virtual void Hide()
+}
+
+public class UGUIManager : Singleton<UGUIManager>
+{
+    public void ShowPanel<T>(PanelName panelName,UILayer layer = UILayer.Mid,Action<T> callback = null) where T : UGUIBase
+    public void HidePanel(PanelName panelName)
+    public T GetPanel<T>(PanelName panelName) where T : UGUIBase
+    public static void AddCustomEventListener(UIBehaviour control, EventTriggerType type,UnityAction<BaseEventData> callback)
+}
+```
+
