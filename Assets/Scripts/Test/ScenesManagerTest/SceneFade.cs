@@ -8,7 +8,7 @@ namespace Test.ScenesManagerTest
     public class SceneFade : MonoBehaviour
     {
         [SerializeField]private float fadeSpeed;
-        [SerializeField] private Color colorFade;
+        [SerializeField]private Color colorFade;
         
         private RawImage _switchImg;
 

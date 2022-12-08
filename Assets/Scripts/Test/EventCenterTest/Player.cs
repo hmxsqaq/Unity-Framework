@@ -7,7 +7,7 @@ namespace Test.EventCenterTest
     {
         private void Start()
         {
-            EventCenter.Instance.AddEventListener<object>("1",Test1);
+            EventCenter.Instance.AddEventListener<object>(EventName.Test,Test1);
         }
         
         private void Test1(object info)

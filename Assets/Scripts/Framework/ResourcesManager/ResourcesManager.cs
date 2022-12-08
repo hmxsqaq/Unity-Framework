@@ -10,9 +10,9 @@ namespace Framework
     /// </summary>
     public class ResourcesManager : Singleton<ResourcesManager>
     {
-        public T LoadSync<T>(string name) where T : Object
+        public T LoadSync<T>(string path) where T : Object
         {
-            T resource = Resources.Load<T>(name);
+            T resource = Resources.Load<T>(path);
             if (resource is GameObject)
             {
                 return Object.Instantiate(resource);
@@ -20,19 +20,19 @@ namespace Framework
             return resource;
         }
 
-        public void LoadAsync<T>(string name, Action<T> callback) where T : Object
+        public void LoadAsync<T>(string path, Action<T> callback = null) where T : Object
         {
-            MonoManager.Instance.StartCoroutine(AsyncLoad(name, callback));
+            MonoManager.Instance.StartCoroutine(AsyncLoad(path, callback));
         }
 
-        private IEnumerator AsyncLoad<T>(string name, Action<T> callback) where T : Object
+        private IEnumerator AsyncLoad<T>(string path, Action<T> callback = null) where T : Object
         {
-            ResourceRequest request = Resources.LoadAsync<T>(name);
+            ResourceRequest request = Resources.LoadAsync<T>(path);
             yield return request;
             if (request.asset is GameObject)
-                callback(Object.Instantiate(request.asset) as T);
+                callback?.Invoke(Object.Instantiate(request.asset) as T);
             else
-                callback(request.asset as T);
+                callback?.Invoke(request.asset as T);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Test.EventCenterTest
     {
         private void Start()
         {
-            EventCenter.Instance.Trigger<object>("1",this);
+            EventCenter.Instance.Trigger<object>(EventName.Test,this);
         }
     }
 }

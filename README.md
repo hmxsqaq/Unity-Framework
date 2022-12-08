@@ -7,6 +7,5 @@ To record my unity framework learning process.
 - [x] MonoManager
 - [x] ScenesManager
 - [x] ResourcesManager
-- [ ] InputManager
 - [ ] AudioManager
 - [ ] UIManager

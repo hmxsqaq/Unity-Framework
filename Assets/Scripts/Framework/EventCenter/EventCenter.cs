@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace Framework
 {
+    public enum EventName
+    {
+        SceneStart,
+        SceneLoading,
+        SceneEnd,
+        Test
+    }
+    
     public interface IEventInfo{}
     
     public class EventInfo : IEventInfo
@@ -17,14 +25,14 @@ namespace Framework
     
     public class EventCenter : Singleton<EventCenter>
     {
-        private Dictionary<string, IEventInfo> _eventDic = new();
+        private readonly Dictionary<EventName, IEventInfo> _eventDic = new();
         
         /// <summary>
         /// No Parameter Event Add
         /// </summary>
         /// <param name="name"> EventName </param>
         /// <param name="action"> Action with no Parameter </param>
-        public void AddEventListener(string name,Action action)
+        public void AddEventListener(EventName name,Action action)
         {
             if (!_eventDic.ContainsKey(name))
             {
@@ -39,7 +47,7 @@ namespace Framework
         /// <param name="name"> EventName </param>
         /// <param name="action"> Action with 1 Generics Parameter </param>
         /// <typeparam name="T"> Generics Parameter(user defined) </typeparam>
-        public void AddEventListener<T>(string name,Action<T> action)
+        public void AddEventListener<T>(EventName name,Action<T> action)
         {
             if (!_eventDic.ContainsKey(name))
             {
@@ -53,7 +61,7 @@ namespace Framework
         /// </summary>
         /// <param name="name"> EventName </param>
         /// <param name="action"> Action with no Parameter </param>
-        public void RemoveEventListener(string name,Action action)
+        public void RemoveEventListener(EventName name,Action action)
         {
             if (_eventDic.ContainsKey(name))
             {
@@ -71,7 +79,7 @@ namespace Framework
         /// <param name="name"> EventName </param>
         /// <param name="action"> Action with 1 Generics Parameter </param>
         /// <typeparam name="T"> Generics Parameter(user defined) </typeparam>
-        public void RemoveEventListener<T>(string name,Action<T> action)
+        public void RemoveEventListener<T>(EventName name,Action<T> action)
         {
             if (_eventDic.ContainsKey(name))
             {
@@ -87,7 +95,7 @@ namespace Framework
         /// Trigger Event with no Parameter
         /// </summary>
         /// <param name="name"> EventName </param>
-        public void Trigger(string name)
+        public void Trigger(EventName name)
         {
             if (_eventDic.ContainsKey(name))
             {
@@ -110,7 +118,7 @@ namespace Framework
         /// <param name="name"> EventName </param>
         /// <param name="info"> Given Parameter </param>
         /// <typeparam name="T"> Generics Parameter(user defined) </typeparam>
-        public void Trigger<T>(string name,T info)
+        public void Trigger<T>(EventName name,T info)
         {
             if (_eventDic.ContainsKey(name))
             {
@@ -136,10 +144,4 @@ namespace Framework
         }
     }
 
-    public static class EventName
-    {
-        public const string SceneStart = "SceneStart";
-        public const string SceneLoading = "SceneLoading";
-        public const string SceneEnd = "SceneEnd";
-    }
 }

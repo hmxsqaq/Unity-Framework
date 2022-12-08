@@ -9,14 +9,14 @@ namespace Test.ObjectPoolTest
         {
             if (Input.GetMouseButtonDown(0))
             {
-                ObjectPool.Instance.GetAsync("Prefabs/ObjectPool/Cube", (o =>
+                ObjectPool.Instance.GetAsync("Cube","Prefabs/ObjectPool/Cube", (o =>
                 {
                     Debug.Log("AsyncGenerate");
                 }));
             }
             if (Input.GetMouseButtonDown(1))
             {
-                ObjectPool.Instance.GetSync("Prefabs/ObjectPool/Sphere");
+                ObjectPool.Instance.GetSync("Sphere","Prefabs/ObjectPool/Sphere");
             }
         }
     }

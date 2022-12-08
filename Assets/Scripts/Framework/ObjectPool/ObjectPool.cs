@@ -11,7 +11,15 @@ namespace Framework
     public class ObjectPool : Singleton<ObjectPool>
     {
         private GameObject _poolObject;
-        private Dictionary<string, Pool> _poolDic = new Dictionary<string, Pool>();
+        private readonly Dictionary<string, PoolData> _poolDic = new();
+
+        protected override void OnInstanceCreate()
+        {
+            _poolObject = new GameObject
+            {
+                name = "ObjectPool"
+            };
+        }
 
         /// <summary>
         /// Add Object to ObjectPool
@@ -20,11 +28,8 @@ namespace Framework
         /// <param name="gameObject"> Obj being pushed </param>
         public void Push(string poolName,GameObject gameObject)
         {
-            if (_poolObject == null)
-                _poolObject = new GameObject("ObjectPool");
-
             if (!_poolDic.ContainsKey(poolName))
-                _poolDic.Add(poolName,new Pool(gameObject,_poolObject));
+                _poolDic.Add(poolName,new PoolData(gameObject,_poolObject));
             
             _poolDic[poolName].Push(gameObject);
         }
@@ -33,15 +38,16 @@ namespace Framework
         /// Get Object from Pool or instantiate it(Sync)
         /// </summary>
         /// <param name="poolName"> PoolName </param>
+        /// <param name="path"> LoadPath </param>
         /// <returns> Obj being obtained or instantiated </returns>
-        public GameObject GetSync(string poolName)
+        public GameObject GetSync(string poolName,string path)
         {
             GameObject gameObject;
             if (_poolDic.ContainsKey(poolName) && _poolDic[poolName].ObjectList.Count > 0)
                 gameObject = _poolDic[poolName].Get();
             else
             {
-                gameObject = ResourcesManager.Instance.LoadSync<GameObject>(poolName);
+                gameObject = ResourcesManager.Instance.LoadSync<GameObject>(path);
                 gameObject.name = poolName;
             }
             return gameObject;
@@ -51,8 +57,9 @@ namespace Framework
         /// Get Object from Pool or instantiate it(Async)
         /// </summary>
         /// <param name="poolName"> PoolName </param>
+        /// <param name="path"> LoadPath </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void GetAsync(string poolName,Action<GameObject> callback)
+        public void GetAsync(string poolName,string path,Action<GameObject> callback = null)
         {
             if (_poolDic.ContainsKey(poolName) && _poolDic[poolName].ObjectList.Count > 0)
             {
@@ -61,7 +68,7 @@ namespace Framework
             }
             else
             {
-                ResourcesManager.Instance.LoadAsync<GameObject>(poolName, (obj) =>
+                ResourcesManager.Instance.LoadAsync<GameObject>(path, (obj) =>
                 {
                     obj.name = poolName;
                     callback?.Invoke(obj);
@@ -83,21 +90,21 @@ namespace Framework
     /// 单一池
     /// 用于管理某一类Object
     /// </summary>
-    public class Pool
+    public class PoolData
     {
-        public GameObject ParentObject;
-        public List<GameObject> ObjectList;
+        private readonly GameObject _parentObject;
+        public readonly List<GameObject> ObjectList;
         
         /// <summary>
         /// Init
         /// </summary>
         /// <param name="gameObject"> the first pushed Obj </param>
         /// <param name="poolObject"> empty parent Obj to all pool </param>
-        public Pool(GameObject gameObject,GameObject poolObject)
+        public PoolData(GameObject gameObject,GameObject poolObject)
         {
-            ParentObject = new GameObject(gameObject.name);
+            _parentObject = new GameObject(gameObject.name);
             ObjectList = new List<GameObject>();
-            ParentObject.transform.parent = poolObject.transform;
+            _parentObject.transform.parent = poolObject.transform;
         }
 
         /// <summary>
@@ -108,7 +115,7 @@ namespace Framework
         {
             // View
             gameObject.SetActive(false);
-            gameObject.transform.parent = ParentObject.transform;
+            gameObject.transform.parent = _parentObject.transform;
             // Model
             ObjectList.Add(gameObject);
         }

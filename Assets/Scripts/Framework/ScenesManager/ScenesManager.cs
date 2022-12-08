@@ -12,7 +12,7 @@ namespace Framework
         /// </summary>
         /// <param name="name"> SceneName </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void LoadSceneSync(string name, Action callback)
+        public void LoadSceneSync(string name, Action callback = null)
         {
             SceneManager.LoadScene(name);
             callback?.Invoke();
@@ -23,7 +23,7 @@ namespace Framework
         /// </summary>
         /// <param name="name"> SceneName </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void LoadSceneAsync(string name, Action callback)
+        public void LoadSceneAsync(string name, Action callback = null)
         {
             MonoManager.Instance.StartCoroutine(AsyncLoad(name));
             callback?.Invoke();
