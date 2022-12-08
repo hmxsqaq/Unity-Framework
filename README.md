@@ -127,7 +127,8 @@ To record my unity framework learning process.
   
   public class AudioCenter : SingletonMono<AudioCenter>
   {
-      public void AudioPlay(Audio pAudio)
+      public void AudioPlaySync(Audio pAudio)
+      public void AudioPlayAsync(Audio pAudio)
       public void AudioStop(AudioType type, string clipName = "")
       public void AudioPause(AudioType type, string clipName = "")
       public void AudioUnPause(AudioType type, string clipName = "")

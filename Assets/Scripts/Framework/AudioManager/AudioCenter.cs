@@ -17,13 +17,13 @@ namespace Framework
     /// </summary>
     public class Audio
     {
-        public AudioType Type;
-        public string ClipName;
-        public bool IsLoop;
-        public Action Callback;
+        public readonly AudioType Type;
+        public readonly string ClipName;
+        public readonly bool IsLoop;
+        public readonly Action Callback;
 
-        public bool Is3D;
-        public Vector3 Position = Vector3.zero;
+        public readonly bool Is3D;
+        public readonly Vector3 Position;
 
         public Audio(AudioType type, string clipName, bool isLoop = false, Action callback = null)
         {
@@ -171,6 +171,37 @@ namespace Framework
         }
 
         /// <summary>
+        /// Async Load or Get Clip
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="clipName"></param>
+        /// <param name="callback"></param>
+        private void GetClipAsync(AudioType type, string clipName, Action<AudioClip> callback)
+        {
+            AudioPathDic.TryGetValue(type, out string path);
+            if (path == null)
+            {
+                Debug.LogError($"Cannot Find Path:{type}");
+                return;
+            }
+            if (!AudioClipDic.ContainsKey(path+clipName))
+            {
+                ResourcesManager.Instance.LoadAsync<AudioClip>(path+clipName, clip =>
+                {
+                    if (clip == null)
+                    {
+                        Debug.LogError($"Cannot Find Clip:{clipName}");
+                        return;
+                    }
+                    AudioClipDic.Add(path+clipName,clip);
+                    callback?.Invoke(clip);
+                });
+            }
+            else
+                callback?.Invoke(AudioClipDic[path + clipName]);
+        }
+
+        /// <summary>
         /// Add or Get Source
         /// </summary>
         /// <param name="type"> AudioType </param>
@@ -225,14 +256,15 @@ namespace Framework
         }
 
         /// <summary>
-        /// Start Audio
+        /// Start Audio Sync
         /// </summary>
         /// <param name="pAudio"> Audio Class </param>
-        public void AudioPlay(Audio pAudio)
+        public void AudioPlaySync(Audio pAudio)
         {
             AudioClip clip = GetClipSync(pAudio.Type, pAudio.ClipName);
             AudioSource source = GetSource(pAudio.Type, out AudioPoolData data);
             if (clip == null || source == null) return;
+            
             AudioMuteStateDic.TryGetValue(pAudio.Type, out bool muteState);
             AudioVolumeDic.TryGetValue(pAudio.Type, out float volume);
             
@@ -248,6 +280,35 @@ namespace Framework
 
             if (pAudio.Is3D)
                 AudioSource.PlayClipAtPoint(clip,pAudio.Position);
+        }
+
+        /// <summary>
+        /// Start Audio Async
+        /// </summary>
+        /// <param name="pAudio"></param>
+        public void AudioPlayAsync(Audio pAudio)
+        {
+            GetClipAsync(pAudio.Type,pAudio.ClipName, clip =>
+            {
+                AudioSource source = GetSource(pAudio.Type, out AudioPoolData data);
+                if (clip == null || source == null) return;
+                
+                AudioMuteStateDic.TryGetValue(pAudio.Type, out bool muteState);
+                AudioVolumeDic.TryGetValue(pAudio.Type, out float volume);
+            
+                source.clip = clip;
+                source.clip.LoadAudioData();
+                source.loop = pAudio.IsLoop;
+                source.mute = muteState;
+                source.volume = volume;
+                source.Play();
+
+                if (pAudio.Type != AudioType.BGM)
+                    StartCoroutine(WaitToPush(data, pAudio.Callback));
+
+                if (pAudio.Is3D)
+                    AudioSource.PlayClipAtPoint(clip,pAudio.Position);
+            });
         }
 
         /// <summary>
