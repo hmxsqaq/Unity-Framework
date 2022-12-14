@@ -8,21 +8,9 @@ using Object = UnityEngine.Object;
 
 namespace Framework
 {
-    public enum UILayer
-    {
-        System,
-        Top,
-        Mid,
-        Bot
-    }
-
-    public enum PanelName
-    {
-        PanelAudio
-    }
     public class UGUIManager : Singleton<UGUIManager>
     {
-        private readonly Dictionary<PanelName, UGUIBase> _panelDic = new();
+        private readonly Dictionary<PanelType, UGUIBase> _panelDic = new();
 
         private Transform _system;
         private Transform _top;
@@ -58,37 +46,37 @@ namespace Framework
         /// <summary>
         /// Create Panel
         /// </summary>
-        /// <param name="panelName"> enum PanelName </param>
-        /// <param name="layer"> enum Layer </param>
+        /// <param name="panelType"> enum PanelName </param>
+        /// <param name="layerType"> enum Layer </param>
         /// <param name="callback"> return the script of Panel </param>
         /// <typeparam name="T"> ScriptName of Panel </typeparam>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void ShowPanel<T>(PanelName panelName,UILayer layer = UILayer.Mid,Action<T> callback = null) where T : UGUIBase
+        public void ShowPanel<T>(PanelType panelType,UILayerType layerType = UILayerType.Mid,Action<T> callback = null) where T : UGUIBase
         {
-            if (_panelDic.ContainsKey(panelName))
+            if (_panelDic.ContainsKey(panelType))
             {
-                Debug.LogError($"Panel:{panelName} has been created");
+                Debug.LogError($"Panel:{panelType} has been created");
                 return;
             }
-            ResourcesManager.Instance.LoadAsync<GameObject>($"Prefabs/UI/Panels/{panelName}",obj =>
+            ResourcesManager.Instance.LoadAsync<GameObject>($"Prefabs/UI/Panels/{panelType}",obj =>
             {
                 Transform parent;
-                switch (layer)
+                switch (layerType)
                 {
-                    case UILayer.System:
+                    case UILayerType.System:
                         parent = _system;
                         break;
-                    case UILayer.Top:
+                    case UILayerType.Top:
                         parent = _top;
                         break;
-                    case UILayer.Mid:
+                    case UILayerType.Mid:
                         parent = _mid;
                         break;
-                    case UILayer.Bot:
+                    case UILayerType.Bot:
                         parent = _bot;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(layer), layer, null);
+                        throw new ArgumentOutOfRangeException(nameof(layerType), layerType, null);
                 }
 
                 obj.transform.SetParent(parent);
@@ -101,38 +89,38 @@ namespace Framework
                 callback?.Invoke(panel);
                 panel.Show();
                 
-                _panelDic.Add(panelName,panel);
+                _panelDic.Add(panelType,panel);
             });
         }
 
         /// <summary>
         /// Delete Panel
         /// </summary>
-        /// <param name="panelName"></param>
-        public void HidePanel(PanelName panelName)
+        /// <param name="panelType"></param>
+        public void HidePanel(PanelType panelType)
         {
-            if (_panelDic.ContainsKey(panelName))
+            if (_panelDic.ContainsKey(panelType))
             {
-                _panelDic[panelName].Hide();
-                Object.Destroy(_panelDic[panelName].gameObject);
-                _panelDic.Remove(panelName);
+                _panelDic[panelType].Hide();
+                Object.Destroy(_panelDic[panelType].gameObject);
+                _panelDic.Remove(panelType);
             }
             else
             {
-                Debug.LogError($"Cannot Find Panel:{panelName} in PanelDic");
+                Debug.LogError($"Cannot Find Panel:{panelType} in PanelDic");
             }
         }
 
         /// <summary>
         /// Get opened Panel
         /// </summary>
-        /// <param name="panelName"></param>
+        /// <param name="panelType"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T GetPanel<T>(PanelName panelName) where T : UGUIBase
+        public T GetPanel<T>(PanelType panelType) where T : UGUIBase
         {
-            if (_panelDic.ContainsKey(panelName))
-                return _panelDic[panelName] as T;
+            if (_panelDic.ContainsKey(panelType))
+                return _panelDic[panelType] as T;
             Debug.LogError("Cannot Find Panel:{panelName} in PanelDic");
             return null;
         }

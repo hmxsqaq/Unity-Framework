@@ -1,6 +1,7 @@
 ﻿using System;
 using Framework;
 using UnityEngine;
+using EventType = Framework.EventType;
 
 namespace Test.EventCenterTest
 {
@@ -8,7 +9,7 @@ namespace Test.EventCenterTest
     {
         private void Start()
         {
-            EventCenter.Instance.Trigger<object>(EventName.Test,this);
+            EventCenter.Instance.Trigger<object>(EventType.Test,this);
         }
     }
 }

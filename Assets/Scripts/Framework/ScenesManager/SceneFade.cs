@@ -12,14 +12,14 @@ namespace Framework
 
         private void Awake()
         {
-            EventCenter.Instance.AddEventListener(EventName.SceneStart,SceneStart);
-            EventCenter.Instance.AddEventListener(EventName.SceneEnd,SceneEnd);
+            EventCenter.Instance.AddEventListener(EventType.SceneStart,SceneStart);
+            EventCenter.Instance.AddEventListener(EventType.SceneEnd,SceneEnd);
         }
 
         private void OnDestroy()
         {
-            EventCenter.Instance.RemoveEventListener(EventName.SceneStart,SceneStart);
-            EventCenter.Instance.RemoveEventListener(EventName.SceneEnd,SceneEnd);
+            EventCenter.Instance.RemoveEventListener(EventType.SceneStart,SceneStart);
+            EventCenter.Instance.RemoveEventListener(EventType.SceneEnd,SceneEnd);
         }
 
         private void Start()

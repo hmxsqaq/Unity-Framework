@@ -4,14 +4,6 @@ using UnityEngine;
 
 namespace Framework
 {
-    public enum EventName
-    {
-        SceneStart,
-        SceneLoading,
-        SceneEnd,
-        Test
-    }
-    
     public interface IEventInfo{}
     
     public class EventInfo : IEventInfo
@@ -25,113 +17,113 @@ namespace Framework
     
     public class EventCenter : Singleton<EventCenter>
     {
-        private readonly Dictionary<EventName, IEventInfo> _eventDic = new();
-        
+        private readonly Dictionary<EventType, IEventInfo> _eventDic = new();
+
         /// <summary>
         /// No Parameter Event Add
         /// </summary>
-        /// <param name="name"> EventName </param>
-        /// <param name="action"> Action with no Parameter </param>
-        public void AddEventListener(EventName name,Action action)
+        /// <param name="type">EventType</param>
+        /// <param name="action">Action with no Parameter</param>
+        public void AddEventListener(EventType type,Action action)
         {
-            if (!_eventDic.ContainsKey(name))
+            if (!_eventDic.ContainsKey(type))
             {
-                _eventDic.Add(name,new EventInfo());
+                _eventDic.Add(type,new EventInfo());
             }
-            ((EventInfo)_eventDic[name]).Actions += action;
+            ((EventInfo)_eventDic[type]).Actions += action;
         }
 
         /// <summary>
         /// Generics Parameter Event Add
         /// </summary>
-        /// <param name="name"> EventName </param>
-        /// <param name="action"> Action with 1 Generics Parameter </param>
-        /// <typeparam name="T"> Generics Parameter(user defined) </typeparam>
-        public void AddEventListener<T>(EventName name,Action<T> action)
+        /// <param name="type">EventType</param>
+        /// <param name="action">Action with 1 Generics Parameter</param>
+        /// <typeparam name="T"></typeparam>
+        public void AddEventListener<T>(EventType type,Action<T> action)
         {
-            if (!_eventDic.ContainsKey(name))
+            if (!_eventDic.ContainsKey(type))
             {
-                _eventDic.Add(name,new EventInfo<T>());
+                _eventDic.Add(type,new EventInfo<T>());
             }
-            ((EventInfo<T>)_eventDic[name]).Actions += action;
+            ((EventInfo<T>)_eventDic[type]).Actions += action;
         }
 
         /// <summary>
         /// No Parameter Event Remove
         /// </summary>
-        /// <param name="name"> EventName </param>
-        /// <param name="action"> Action with no Parameter </param>
-        public void RemoveEventListener(EventName name,Action action)
+        /// <param name="type"></param>
+        /// <param name="action"></param>
+        public void RemoveEventListener(EventType type,Action action)
         {
-            if (_eventDic.ContainsKey(name))
+            if (_eventDic.ContainsKey(type))
             {
-                ((EventInfo)_eventDic[name]).Actions -= action;
+                ((EventInfo)_eventDic[type]).Actions -= action;
             }
             else
             {
-                Debug.LogError($"EventCenter-Remove-Key:{name} Not Find");
+                Debug.LogError($"EventCenter-Remove-Key:{type} Not Find");
             }
         }
-        
+
         /// <summary>
         /// Generics Parameter Event Remove
         /// </summary>
-        /// <param name="name"> EventName </param>
-        /// <param name="action"> Action with 1 Generics Parameter </param>
-        /// <typeparam name="T"> Generics Parameter(user defined) </typeparam>
-        public void RemoveEventListener<T>(EventName name,Action<T> action)
+        /// <param name="type"></param>
+        /// <param name="action"></param>
+        /// <typeparam name="T"></typeparam>
+        public void RemoveEventListener<T>(EventType type,Action<T> action)
         {
-            if (_eventDic.ContainsKey(name))
+            if (_eventDic.ContainsKey(type))
             {
-                ((EventInfo<T>)_eventDic[name]).Actions -= action;
+                ((EventInfo<T>)_eventDic[type]).Actions -= action;
             }
             else
             {
-                Debug.LogError($"EventCenter-Remove-Key:{name} Not Find");
+                Debug.LogError($"EventCenter-Remove-Key:{type} Not Find");
             }
         }
 
         /// <summary>
         /// Trigger Event with no Parameter
         /// </summary>
-        /// <param name="name"> EventName </param>
-        public void Trigger(EventName name)
+        /// <param name="type"></param>
+        public void Trigger(EventType type)
         {
-            if (_eventDic.ContainsKey(name))
+            if (_eventDic.ContainsKey(type))
             {
-                if (((EventInfo)_eventDic[name]).Actions == null)
+                if (((EventInfo)_eventDic[type]).Actions == null)
                 {
-                    Debug.LogError($"EventCenter-Trigger-Key:{name} Is Empty");
+                    Debug.LogError($"EventCenter-Trigger-Key:{type} Is Empty");
                     return;
                 }
-                ((EventInfo)_eventDic[name]).Actions();
+                ((EventInfo)_eventDic[type]).Actions();
             }
             else
             {
-                Debug.LogError($"EventCenter-Trigger-Key:{name} Not Find");
+                Debug.LogError($"EventCenter-Trigger-Key:{type} Not Find");
             }
         }
-        
+
         /// <summary>
         /// Trigger Event with Generics Parameter
         /// </summary>
-        /// <param name="name"> EventName </param>
-        /// <param name="info"> Given Parameter </param>
-        /// <typeparam name="T"> Generics Parameter(user defined) </typeparam>
-        public void Trigger<T>(EventName name,T info)
+        /// <param name="type"></param>
+        /// <param name="info"></param>
+        /// <typeparam name="T"></typeparam>
+        public void Trigger<T>(EventType type,T info)
         {
-            if (_eventDic.ContainsKey(name))
+            if (_eventDic.ContainsKey(type))
             {
-                if (((EventInfo<T>)_eventDic[name]).Actions == null)
+                if (((EventInfo<T>)_eventDic[type]).Actions == null)
                 {
-                    Debug.LogError($"EventCenter-Trigger-Key:{name} Is Empty");
+                    Debug.LogError($"EventCenter-Trigger-Key:{type} Is Empty");
                     return;
                 }
-                ((EventInfo<T>)_eventDic[name]).Actions(info);
+                ((EventInfo<T>)_eventDic[type]).Actions(info);
             }
             else
             {
-                Debug.LogError($"EventCenter-Trigger-Key:{name} Not Find");
+                Debug.LogError($"EventCenter-Trigger-Key:{type} Not Find");
             }
         }
 

@@ -5,69 +5,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public enum AudioType
-    {
-        BGM,
-        UI,
-        Effect
-    }
-
-    /// <summary>
-    /// 封装被播放音频的参数
-    /// </summary>
-    public class Audio
-    {
-        public readonly AudioType Type;
-        public readonly string ClipName;
-        public readonly bool IsLoop;
-        public readonly Action Callback;
-
-        public readonly bool Is3D;
-        public readonly Vector3 Position;
-
-        public Audio(AudioType type, string clipName, bool isLoop = false, Action callback = null)
-        {
-            Type = type;
-            ClipName = clipName;
-            IsLoop = isLoop;
-            Callback = callback;
-        }
-        
-        public Audio(AudioType type, string clipName, bool is3D, Vector3 position, bool isLoop = false, Action callback = null)
-        {
-            Type = type;
-            ClipName = clipName;
-            Is3D = is3D;
-            Position = position;
-            IsLoop = isLoop;
-            Callback = callback;
-        }
-    }
-
-    [Serializable]
-    public class AudioPoolData
-    {
-        [SerializeField]private AudioType type;
-        [SerializeField]private AudioSource audioSource;
-        [SerializeField]private bool isUsing;// 可用状态
-        [SerializeField]private bool isInPause;// 暂停中
-
-        public AudioType Type { get=> type; set => type = value; }
-
-        public AudioSource AudioSource { get=> audioSource; set => audioSource = value; }
-        public bool IsUsing { get=> isUsing; set => isUsing = value; }
-        public bool IsInPause { get=> isInPause; set => isInPause = value; }
-
-        public AudioPoolData(AudioType pType, AudioSource pAudioSource, bool pIsUsing, bool pIsInPause)
-        {
-            Type = pType;
-            AudioSource = pAudioSource;
-            IsUsing = pIsUsing;
-            IsInPause = pIsInPause;
-        }
-    }
-    
-    public class AudioCenter : SingletonMono<AudioCenter>
+     public class AudioCenter : SingletonMono<AudioCenter>
     {
         private static readonly Dictionary<AudioType, string> AudioPathDic = new();
         private static readonly Dictionary<AudioType, float> AudioVolumeDic = new();
@@ -256,63 +194,63 @@ namespace Framework
         }
 
         /// <summary>
-        /// Start Audio Sync
+        /// Start AudioAsset Sync
         /// </summary>
-        /// <param name="pAudio"> Audio Class </param>
-        public void AudioPlaySync(Audio pAudio)
+        /// <param name="pAudioAsset"></param>
+        public void AudioPlaySync(AudioAsset pAudioAsset)
         {
-            AudioClip clip = GetClipSync(pAudio.Type, pAudio.ClipName);
-            AudioSource source = GetSource(pAudio.Type, out AudioPoolData data);
+            AudioClip clip = GetClipSync(pAudioAsset.Type, pAudioAsset.ClipName);
+            AudioSource source = GetSource(pAudioAsset.Type, out AudioPoolData data);
             if (clip == null || source == null) return;
             
-            AudioMuteStateDic.TryGetValue(pAudio.Type, out bool muteState);
-            AudioVolumeDic.TryGetValue(pAudio.Type, out float volume);
+            AudioMuteStateDic.TryGetValue(pAudioAsset.Type, out bool muteState);
+            AudioVolumeDic.TryGetValue(pAudioAsset.Type, out float volume);
             
             source.clip = clip;
             source.clip.LoadAudioData();
-            source.loop = pAudio.IsLoop;
+            source.loop = pAudioAsset.IsLoop;
             source.mute = muteState;
             source.volume = volume;
             source.Play();
 
-            if (pAudio.Type != AudioType.BGM)
-                StartCoroutine(WaitToPush(data, pAudio.Callback));
+            if (pAudioAsset.Type != AudioType.BGM)
+                StartCoroutine(WaitToPush(data, pAudioAsset.Callback));
 
-            if (pAudio.Is3D)
-                AudioSource.PlayClipAtPoint(clip,pAudio.Position);
+            if (pAudioAsset.Is3D)
+                AudioSource.PlayClipAtPoint(clip,pAudioAsset.Position);
         }
 
         /// <summary>
-        /// Start Audio Async
+        /// Start AudioAsset Async
         /// </summary>
-        /// <param name="pAudio"></param>
-        public void AudioPlayAsync(Audio pAudio)
+        /// <param name="pAudioAsset"></param>
+        public void AudioPlayAsync(AudioAsset pAudioAsset)
         {
-            GetClipAsync(pAudio.Type,pAudio.ClipName, clip =>
+            GetClipAsync(pAudioAsset.Type,pAudioAsset.ClipName, clip =>
             {
-                AudioSource source = GetSource(pAudio.Type, out AudioPoolData data);
+                AudioSource source = GetSource(pAudioAsset.Type, out AudioPoolData data);
                 if (clip == null || source == null) return;
                 
-                AudioMuteStateDic.TryGetValue(pAudio.Type, out bool muteState);
-                AudioVolumeDic.TryGetValue(pAudio.Type, out float volume);
+                AudioMuteStateDic.TryGetValue(pAudioAsset.Type, out bool muteState);
+                AudioVolumeDic.TryGetValue(pAudioAsset.Type, out float volume);
             
                 source.clip = clip;
                 source.clip.LoadAudioData();
-                source.loop = pAudio.IsLoop;
+                source.loop = pAudioAsset.IsLoop;
                 source.mute = muteState;
                 source.volume = volume;
                 source.Play();
 
-                if (pAudio.Type != AudioType.BGM)
-                    StartCoroutine(WaitToPush(data, pAudio.Callback));
+                if (pAudioAsset.Type != AudioType.BGM)
+                    StartCoroutine(WaitToPush(data, pAudioAsset.Callback));
 
-                if (pAudio.Is3D)
-                    AudioSource.PlayClipAtPoint(clip,pAudio.Position);
+                if (pAudioAsset.Is3D)
+                    AudioSource.PlayClipAtPoint(clip,pAudioAsset.Position);
             });
         }
 
         /// <summary>
-        /// Stop Audio
+        /// Stop AudioAsset
         /// </summary>
         /// <param name="type"> AudioType </param>
         /// <param name="clipName"> Clip File Name </param>
@@ -336,7 +274,7 @@ namespace Framework
         }
         
         /// <summary>
-        /// Pause Audio
+        /// Pause AudioAsset
         /// </summary>
         /// <param name="type"> AudioType </param>
         /// <param name="clipName"> Clip File Name </param>
@@ -360,7 +298,7 @@ namespace Framework
         }
         
         /// <summary>
-        /// UnPause Audio
+        /// UnPause AudioAsset
         /// </summary>
         /// <param name="type"> AudioType </param>
         /// <param name="clipName"> Clip File Name </param>

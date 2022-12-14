@@ -5,33 +5,27 @@ using UnityEngine.SceneManagement;
 
 namespace Framework
 {
-    public enum SceneName
-    {
-        Main1,
-        Main2
-    }
-    
     public class ScenesManager : Singleton<ScenesManager>
     {
         /// <summary>
         /// SyncLoad
         /// </summary>
-        /// <param name="name"> SceneName </param>
+        /// <param name="type"> SceneName </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void LoadSceneSync(SceneName name, Action callback = null)
+        public void LoadSceneSync(SceneType type, Action callback = null)
         {
-            SceneManager.LoadScene(name.ToString());
+            SceneManager.LoadScene(type.ToString());
             callback?.Invoke();
         }
 
         /// <summary>
         /// AsyncLoad
         /// </summary>
-        /// <param name="name"> SceneName </param>
+        /// <param name="type"> SceneName </param>
         /// <param name="callback"> CallbackFunction </param>
-        public void LoadSceneAsync(SceneName name, Action callback = null)
+        public void LoadSceneAsync(SceneType type, Action callback = null)
         {
-            MonoManager.Instance.StartCoroutine(AsyncLoad(name.ToString()));
+            MonoManager.Instance.StartCoroutine(AsyncLoad(type.ToString()));
             callback?.Invoke();
         }
 

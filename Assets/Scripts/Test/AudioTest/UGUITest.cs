@@ -13,7 +13,7 @@ namespace Test
 
         private void PlayBGM()
         {
-            AudioCenter.Instance.AudioPlayAsync(new Audio(AudioType.BGM,"BGM"));
+            AudioCenter.Instance.AudioPlayAsync(new AudioAsset(AudioType.BGM,"BGM"));
         }
     }
 }
