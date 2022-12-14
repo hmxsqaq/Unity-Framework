@@ -34,7 +34,7 @@ namespace Framework
             AsyncOperation async = SceneManager.LoadSceneAsync(name);
             while (!async.isDone)
             {
-                //EventCenter.Instance.Trigger("Loading",async.progress);
+                //LoadingEvent
                 yield return null;
             }
         }
